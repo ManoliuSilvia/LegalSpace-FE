@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useState } from "react";
 
 import { userStore } from "../stores/userStore";
 import { updateMyLawyerData, updateMyProfile } from "../services/usersService";
@@ -11,18 +12,23 @@ import { Roles } from "../utils/models";
 
 export default function Settings() {
   const { user, updateUser } = userStore();
+  const [loading, setLoading] = useState(false);
   const isLawyer = user?.role === Roles.LAWYER;
 
   const handleUserSubmit = async (data: { firstName: string; lastName: string; email: string }) => {
     if (!user?.id) return;
+    setLoading(true);
     const response = await updateMyProfile(user.id, data);
     updateUser({ ...response });
+    setLoading(false);
   };
 
   const handleLawyerSubmit = async (data: { specialty: string[]; experience: number; price: number }) => {
     if (!user?.id) return;
+    setLoading(true);
     const response = await updateMyLawyerData(user.id, data);
     updateUser(response);
+    setLoading(false);
   };
 
   return (
@@ -41,6 +47,7 @@ export default function Settings() {
               email: user?.email || "",
             }}
             onSubmit={handleUserSubmit}
+            loading={loading}
           />
         </GridComponentsWrapper>
 
@@ -53,6 +60,7 @@ export default function Settings() {
                 price: user?.lawyerData?.price || 0,
               }}
               onSubmit={handleLawyerSubmit}
+              loading={loading}
             />
           </GridComponentsWrapper>
         )}

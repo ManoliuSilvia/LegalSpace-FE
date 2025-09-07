@@ -11,9 +11,10 @@ import { Title3 } from "../typography/Titles";
 interface EditLawyerDetailsFormProps {
   initialData: { specialty: string[]; experience: number; price: number };
   onSubmit: (data: { specialty: string[]; experience: number; price: number }) => void;
+  loading?: boolean;
 }
 
-export default function EditLawyerDetailsForm({ initialData, onSubmit }: EditLawyerDetailsFormProps) {
+export default function EditLawyerDetailsForm({ initialData, onSubmit, loading }: EditLawyerDetailsFormProps) {
   const [lawyerSettings, setLawyerSettings] = useState(initialData);
   const [lawyerErrors, setLawyerErrors] = useState({
     specialty: "",
@@ -89,7 +90,7 @@ export default function EditLawyerDetailsForm({ initialData, onSubmit }: EditLaw
             helperText={lawyerErrors.price}
           />
         </FlexColumn>
-        <PrimaryButton type="submit" variant="filled" color="gold">
+        <PrimaryButton type="submit" variant="filled" color="gold" loading={loading} disabled={loading}>
           Save Lawyer Details
         </PrimaryButton>
       </FlexColumn>

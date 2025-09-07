@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import { BackgroundColors, BorderColors, GeneralColors, TextColors } from "../../constants/colors";
 
-import { createCase } from "../../services/casesService";
+import { createCase, SUBMIT_API_URL } from "../../services/casesService";
 
 import { defaultExtractedInfo, TextProcessor, type ExtractedInfo } from "../../utils/TextProcessor";
 import PrimaryButton from "../buttons/PrimaryButton";
@@ -75,14 +75,11 @@ export const CaseInputForm = ({ onCaseSubmitted }: CaseInputFormProps) => {
 
       const textToSend = personalInfo.sanitizedText || description;
 
-      const res = await fetch(
-        "https://39a88710-0a0b-4aae-ab3a-e9a8badb3ed0-00-2bfcb0nvvafcx.kirk.replit.dev/classify",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: textToSend }),
-        }
-      );
+      const res = await fetch(SUBMIT_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: textToSend }),
+      });
       const result = await res.json();
       const category = result.categorie || "Uncategorized";
       setSuggestedCategory(category);

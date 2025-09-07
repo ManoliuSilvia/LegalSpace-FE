@@ -1,17 +1,19 @@
 import { useState } from "react";
+import { Person } from "@mui/icons-material";
+
 import { validateEmail } from "../../utils/validators";
 import CustomInput from "../inputs/CustomInput";
 import PrimaryButton from "../buttons/PrimaryButton";
 import { FlexColumn, FlexRow } from "../../styles/StyledComponents";
-import { Person } from "@mui/icons-material";
 import { Title3 } from "../typography/Titles";
 
 interface EditUserFormProps {
   initialData: { firstName: string; lastName: string; email: string };
   onSubmit: (data: { firstName: string; lastName: string; email: string }) => void;
+  loading?: boolean;
 }
 
-export default function EditUserForm({ initialData, onSubmit }: EditUserFormProps) {
+export default function EditUserForm({ initialData, onSubmit, loading }: EditUserFormProps) {
   const [userSettings, setUserSettings] = useState(initialData);
   const [userErrors, setUserErrors] = useState({
     firstName: "",
@@ -48,46 +50,46 @@ export default function EditUserForm({ initialData, onSubmit }: EditUserFormProp
 
   return (
     <form onSubmit={handleSubmit}>
-        <FlexColumn gap={"32px"} style={{ padding: "24px" }}>
-          <FlexRow alignitems="center">
-            <Person sx={{ mr: 1 }} />
-            <Title3>Profile Information</Title3>
-          </FlexRow>
+      <FlexColumn gap={"32px"} style={{ padding: "24px" }}>
+        <FlexRow alignitems="center">
+          <Person sx={{ mr: 1 }} />
+          <Title3>Profile Information</Title3>
+        </FlexRow>
 
-          <FlexColumn gap="8px">
-            <CustomInput
-              label="First Name"
-              name="firstName"
-              value={userSettings.firstName}
-              fullWidth
-              onChange={handleUserInputChange}
-              error={!!userErrors.firstName}
-              helperText={userErrors.firstName}
-            />
-            <CustomInput
-              label="Last Name"
-              name="lastName"
-              value={userSettings.lastName}
-              fullWidth
-              onChange={handleUserInputChange}
-              error={!!userErrors.lastName}
-              helperText={userErrors.lastName}
-            />
-            <CustomInput
-              label="Email"
-              name="email"
-              value={userSettings.email}
-              fullWidth
-              onChange={handleUserInputChange}
-              error={!!userErrors.email}
-              helperText={userErrors.email}
-            />
-          </FlexColumn>
-
-          <PrimaryButton type="submit" variant="filled" color="gold">
-            Save User Settings
-          </PrimaryButton>
+        <FlexColumn gap="8px">
+          <CustomInput
+            label="First Name"
+            name="firstName"
+            value={userSettings.firstName}
+            fullWidth
+            onChange={handleUserInputChange}
+            error={!!userErrors.firstName}
+            helperText={userErrors.firstName}
+          />
+          <CustomInput
+            label="Last Name"
+            name="lastName"
+            value={userSettings.lastName}
+            fullWidth
+            onChange={handleUserInputChange}
+            error={!!userErrors.lastName}
+            helperText={userErrors.lastName}
+          />
+          <CustomInput
+            label="Email"
+            name="email"
+            value={userSettings.email}
+            fullWidth
+            onChange={handleUserInputChange}
+            error={!!userErrors.email}
+            helperText={userErrors.email}
+          />
         </FlexColumn>
+
+        <PrimaryButton type="submit" variant="filled" color="gold" loading={loading} disabled={loading} fullWidth>
+          Save User Settings
+        </PrimaryButton>
+      </FlexColumn>
     </form>
   );
 }

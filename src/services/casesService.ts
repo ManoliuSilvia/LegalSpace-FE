@@ -2,6 +2,7 @@ import { checkTokenOrRedirect } from "../utils/auth";
 import type { Case, CaseData } from "../utils/models";
 
 const CASES_API_URL = "http://localhost:4000/cases";
+export const SUBMIT_API_URL = "https://39a88710-0a0b-4aae-ab3a-e9a8badb3ed0-00-2bfcb0nvvafcx.kirk.replit.dev/classify";
 
 export async function getCases(): Promise<Case[]> {
   const token = checkTokenOrRedirect();

@@ -1,6 +1,17 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Typography, Avatar, List, ListItem, ListItemAvatar, ListItemText, Divider, Paper } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Avatar,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Divider,
+  Paper,
+  CircularProgress,
+} from "@mui/material";
 import { Send as SendIcon } from "@mui/icons-material";
 import styled from "styled-components";
 
@@ -20,12 +31,14 @@ import CustomInput from "../components/inputs/CustomInput";
 
 export default function Chat() {
   const { user } = userStore();
-  const [, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [suggestedUsers, setSuggestedUsers] = useState<User[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Chat | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  // console.log("logger", selectedConversation);
+  console.log("LOGGER messages", messages);
 
   const { receiverId } = useParams();
   const navigate = useNavigate();
@@ -118,6 +131,16 @@ export default function Chat() {
     );
   }, [suggestedUsers, searchQuery]);
 
+  const otherParticipant = useMemo(() => {
+    if (selectedConversation === null) {
+      return null;
+    }
+    if (receiverId === selectedConversation?.receiverId) {
+      return selectedConversation.receiver;
+    }
+    return selectedConversation?.sender;
+  }, [selectedConversation, receiverId]);
+
   return (
     <FlexColumn gap="24px">
       <FlexColumn>
@@ -138,33 +161,37 @@ export default function Chat() {
             />
           </TopbarContainer>
           <Divider />
-          <List sx={{ flexGrow: 1, overflow: "auto", p: 0 }}>
-            {filteredUsers.map((suggestedUser) => (
-              <ListItem
-                key={suggestedUser.id}
-                onClick={() => {
-                  navigate(`/chat/${suggestedUser.id}`);
-                }}
-                sx={{
-                  cursor: "pointer",
-                  "&:hover": {
-                    backgroundColor: "grey.200",
-                  },
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar>{`${suggestedUser.firstName.charAt(0)}${suggestedUser.lastName.charAt(0)}`}</Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <Typography2 fontWeight="400">{`${suggestedUser.firstName || ""} ${
-                      suggestedUser.lastName || ""
-                    }`}</Typography2>
-                  }
-                />
-              </ListItem>
-            ))}
-          </List>
+          {loading ? (
+            <CircularProgress sx={{ color: GeneralColors.Gold, margin: "0 auto", marginTop: "32px" }} />
+          ) : (
+            <List sx={{ flexGrow: 1, overflow: "auto", p: 0 }}>
+              {filteredUsers.map((suggestedUser) => (
+                <ListItem
+                  key={suggestedUser.id}
+                  onClick={() => {
+                    navigate(`/chat/${suggestedUser.id}`);
+                  }}
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": {
+                      backgroundColor: "grey.200",
+                    },
+                  }}
+                >
+                  <ListItemAvatar>
+                    <Avatar>{`${suggestedUser.firstName.charAt(0)}${suggestedUser.lastName.charAt(0)}`}</Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={
+                      <Typography2 fontWeight="400">{`${suggestedUser.firstName || ""} ${
+                        suggestedUser.lastName || ""
+                      }`}</Typography2>
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          )}
         </ChatElementsContainer>
 
         {/* Chat Messages */}
@@ -174,10 +201,8 @@ export default function Chat() {
               {/* Chat Header */}
               <TopbarContainer>
                 <FlexRow gap="16px" alignitems="center">
-                  <Avatar>{`${selectedConversation?.receiver.firstName.charAt(
-                    0
-                  )}${selectedConversation?.receiver.lastName.charAt(0)}`}</Avatar>
-                  <Title3 fontWeight="400">{`${selectedConversation?.receiver.firstName} ${selectedConversation?.receiver.lastName}`}</Title3>
+                  <Avatar>{`${otherParticipant?.firstName.charAt(0)}${otherParticipant?.lastName.charAt(0)}`}</Avatar>
+                  <Title3 fontWeight="400">{`${otherParticipant?.firstName} ${otherParticipant?.lastName}`}</Title3>
                 </FlexRow>
               </TopbarContainer>
               <Divider />
