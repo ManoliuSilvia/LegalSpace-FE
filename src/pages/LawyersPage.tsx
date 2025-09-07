@@ -13,20 +13,24 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+import { userStore } from "../stores/userStore";
 import { getAllLawyers } from "../services/usersService";
 
 import { GeneralColors } from "../constants/colors";
 
-import { type User } from "../utils/models";
+import { Roles, type User } from "../utils/models";
 import { Card, CardContent, FlexColumn } from "../styles/StyledComponents";
 import { Subtitle1, Title1 } from "../components/typography/Titles";
 import { Typography1, Typography2 } from "../components/typography/Typography";
 import PrimaryButton from "../components/buttons/PrimaryButton";
 
 export default function LawyersPage() {
+  const { user } = userStore();
   const [lawyers, setLawyers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const isClient = user?.role === Roles.CLIENT;
 
   useEffect(() => {
     (async () => {
@@ -122,7 +126,7 @@ export default function LawyersPage() {
                           variant="filled"
                           color="gold"
                           onClick={() => navigate(`/chat/${lawyer.id}`)}
-                          disabled={lawyer.disabled}
+                          disabled={lawyer.disabled || !isClient}
                         >
                           Contact
                         </PrimaryButton>
